@@ -2,6 +2,7 @@ import 'dotenv/config';
 import express from 'express';
 import mongoose from 'mongoose';
 import session from 'express-session';
+import flash from 'connect-flash';
 import path, { join } from 'path';
 import { fileURLToPath } from 'url';
 
@@ -23,6 +24,7 @@ app.use(
     saveUninitialized: true,
   })
 );
+app.use(flash());
 
 app.set('view engine', 'ejs');
 app.set('views', join(__dirname, 'views'));
