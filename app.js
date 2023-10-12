@@ -1,5 +1,6 @@
 import express from 'express';
 import mongoose from 'mongoose';
+import session from 'express-session';
 import path, { join } from 'path';
 import { fileURLToPath } from 'url';
 
@@ -12,6 +13,15 @@ const app = express();
 const port = 3000;
 
 mongoose.connect('mongodb://localhost:27017/phototheque');
+
+app.set('trust proxy', 1);
+app.use(
+  session({
+    secret: 'S0zfS/1PT79cr?#0$4C".*g",,J3CN',
+    resave: false,
+    saveUninitialized: true,
+  })
+);
 
 app.set('view engine', 'ejs');
 app.set('views', join(__dirname, 'views'));
