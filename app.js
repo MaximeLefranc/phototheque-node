@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import express from 'express';
 import mongoose from 'mongoose';
 import session from 'express-session';
@@ -17,7 +18,7 @@ mongoose.connect('mongodb://localhost:27017/phototheque');
 app.set('trust proxy', 1);
 app.use(
   session({
-    secret: 'S0zfS/1PT79cr?#0$4C".*g",,J3CN',
+    secret: process.env.SECRET_SESSION_KEY,
     resave: false,
     saveUninitialized: true,
   })
