@@ -79,23 +79,18 @@ AlbumController.createAlbumForm = (req, res) => {
 
 AlbumController.createAlbum = catchAsync(async (req, res) => {
   const { albumTitle } = req.body;
-  try {
-    if (!albumTitle) {
-      req.flash(
-        'error',
-        "Le titre ne doit pas être vide, merci d'indiquer un titre."
-      );
-      res.redirect('/albums/create');
-      return;
-    }
-    await Album.create({
-      title: albumTitle,
-    });
-    res.redirect('/albums');
-  } catch (err) {
-    req.flash('error', "Erreur lors de la création de l'album.");
+  if (!albumTitle) {
+    req.flash(
+      'error',
+      "Le titre ne doit pas être vide, merci d'indiquer un titre."
+    );
     res.redirect('/albums/create');
+    return;
   }
+  await Album.create({
+    title: albumTitle,
+  });
+  res.redirect('/albums');
 });
 
 AlbumController.deleteImage = catchAsync(async (req, res) => {

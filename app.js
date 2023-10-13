@@ -46,6 +46,12 @@ app.use((req, res) => {
   res.send('Pange non trouvée | Not found error 404');
 });
 
+app.use((err, req, res, next) => {
+  console.error(err);
+  res.status(500);
+  res.send('Erreur interne du serveur');
+});
+
 app.listen(port, () => {
   console.log(`Le serveur est lancé et il écoute sur le port ${port}`);
 });
