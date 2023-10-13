@@ -3,13 +3,14 @@ import { rimrafSync } from 'rimraf';
 import path, { join } from 'path';
 import { fileURLToPath } from 'url';
 import fs from 'fs';
+import catchAsync from '../helpers/catchAsync.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const AlbumController = {};
 
-AlbumController.albums = async (req, res) => {
+AlbumController.albums = catchAsync(async (req, res) => {
   const albums = await Album.find();
   const data = {
     title: 'Mes Albums',
@@ -17,9 +18,9 @@ AlbumController.albums = async (req, res) => {
     errors: req.flash('error'),
   };
   res.render('albums', data);
-};
+});
 
-AlbumController.album = async (req, res) => {
+AlbumController.album = catchAsync(async (req, res) => {
   const { id } = req.params;
   try {
     const album = await Album.findById(id);
@@ -36,9 +37,9 @@ AlbumController.album = async (req, res) => {
     );
     res.redirect('/albums');
   }
-};
+});
 
-AlbumController.addImage = async (req, res) => {
+AlbumController.addImage = catchAsync(async (req, res) => {
   const { id } = req.params;
   const album = await Album.findById(id);
   if (!req?.files?.image) {
@@ -66,10 +67,9 @@ AlbumController.addImage = async (req, res) => {
   await album.save();
 
   res.redirect(`/albums/${id}`);
-};
+});
 
 AlbumController.createAlbumForm = (req, res) => {
-  console.log('je suis dans la bonne méthode');
   const data = {
     title: 'Nouvel album',
     errors: req.flash('error'),
@@ -77,7 +77,7 @@ AlbumController.createAlbumForm = (req, res) => {
   res.render('new-album', data);
 };
 
-AlbumController.createAlbum = async (req, res) => {
+AlbumController.createAlbum = catchAsync(async (req, res) => {
   const { albumTitle } = req.body;
   try {
     if (!albumTitle) {
@@ -96,9 +96,9 @@ AlbumController.createAlbum = async (req, res) => {
     req.flash('error', "Erreur lors de la création de l'album.");
     res.redirect('/albums/create');
   }
-};
+});
 
-AlbumController.deleteImage = async (req, res) => {
+AlbumController.deleteImage = catchAsync(async (req, res) => {
   const { id, index } = req.params;
   const album = await Album.findById(id);
   const image = album.images[index];
@@ -111,14 +111,14 @@ AlbumController.deleteImage = async (req, res) => {
   const imagePath = join(__dirname, '../public/uploads/', id, image);
   fs.unlinkSync(imagePath);
   res.redirect(`/albums/${id}`);
-};
+});
 
-AlbumController.deleteAlbum = async (req, res) => {
+AlbumController.deleteAlbum = catchAsync(async (req, res) => {
   const { id } = req.params;
   await Album.findByIdAndDelete(id);
   const folderPath = join(__dirname, '../public/uploads/', id);
   rimrafSync(folderPath);
   res.redirect('/albums');
-};
+});
 
 export default AlbumController;
