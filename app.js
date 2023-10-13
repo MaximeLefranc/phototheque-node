@@ -35,7 +35,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(fileUpload());
 
-app.use('/', albumRouter);
+app.use('/albums', albumRouter);
 
 app.get('/', (req, res) => {
   res.redirect('/albums');

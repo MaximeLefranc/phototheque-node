@@ -15,15 +15,20 @@ AlbumController.albums = async (req, res) => {
     albums,
     errors: req.flash('error'),
   };
-  console.log(__dirname);
   res.render('albums', data);
 };
 
 AlbumController.album = async (req, res) => {
+  console.log('je suis dans la mauvaise méthode');
   const { id } = req.params;
   try {
     const album = await Album.findById(id);
-    res.render('album', { title: 'Album', album });
+    const data = {
+      title: `Mon album: ${album.title}`,
+      album,
+      errors: req.flash('error'),
+    };
+    res.render('album', data);
   } catch (err) {
     req.flash(
       'error',
@@ -35,30 +40,36 @@ AlbumController.album = async (req, res) => {
 
 AlbumController.addImage = async (req, res) => {
   const { id } = req.params;
-  const { image } = req.files;
-  try {
-    const album = await Album.findById(id);
-    if (image) {
-      const localPathToFolder = join(__dirname, '../public/uploads', id);
-      if (!fs.existsSync(localPathToFolder)) {
-        fs.mkdirSync(localPathToFolder);
-      }
-      const localPathToImage = join(localPathToFolder, image.name);
-      await image.mv(localPathToImage);
-      album.images.push(image.name);
-      await album.save();
-    }
-  } catch (err) {
-    req.flash(
-      'error',
-      "Une erreur s'est produite à l'insertion de votre photo. Merci de réessayer ultérieurement."
-    );
-    res.redirect('/albums');
+  const album = await Album.findById(id);
+  if (!req?.files?.image) {
+    req.flash('error', 'Aucun fichier sélectionné');
+    res.redirect(`/albums/${id}`);
+    return;
   }
+  const { image } = req.files;
+  if (
+    image.mimetype !== 'image/jpeg' &&
+    image.mimetype !== 'image/png' &&
+    image.mimetype !== 'image/jpg'
+  ) {
+    req.flash('error', 'Seul les fichiers JPEG, PNG ou JPG sont acceptés.');
+    res.redirect(`/albums/${id}`);
+    return;
+  }
+  const localPathToFolder = join(__dirname, '../public/uploads', id);
+  if (!fs.existsSync(localPathToFolder)) {
+    fs.mkdirSync(localPathToFolder, { recursive: true });
+  }
+  const localPathToImage = join(localPathToFolder, image.name);
+  await image.mv(localPathToImage);
+  album.images.push(image.name);
+  await album.save();
+
   res.redirect(`/albums/${id}`);
 };
 
 AlbumController.createAlbumForm = (req, res) => {
+  console.log('je suis dans la bonne méthode');
   const data = {
     title: 'Nouvel album',
     errors: req.flash('error'),
@@ -67,6 +78,7 @@ AlbumController.createAlbumForm = (req, res) => {
 };
 
 AlbumController.createAlbum = async (req, res) => {
+  console.log('je suis dans la mauvaise méthode');
   const { albumTitle } = req.body;
   try {
     if (!albumTitle) {
