@@ -1,4 +1,10 @@
 import Album from '../Models/Album.js';
+import path, { join } from 'path';
+import { fileURLToPath } from 'url';
+import fs from 'fs';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const AlbumController = {};
 
@@ -9,6 +15,7 @@ AlbumController.albums = async (req, res) => {
     albums,
     errors: req.flash('error'),
   };
+  console.log(__dirname);
   res.render('albums', data);
 };
 
@@ -24,6 +31,31 @@ AlbumController.album = async (req, res) => {
     );
     res.redirect('/albums');
   }
+};
+
+AlbumController.addImage = async (req, res) => {
+  const { id } = req.params;
+  const { image } = req.files;
+  try {
+    const album = await Album.findById(id);
+    if (image) {
+      const localPathToFolder = join(__dirname, '../public/uploads', id);
+      if (!fs.existsSync(localPathToFolder)) {
+        fs.mkdirSync(localPathToFolder);
+      }
+      const localPathToImage = join(localPathToFolder, image.name);
+      await image.mv(localPathToImage);
+      album.images.push(image.name);
+      await album.save();
+    }
+  } catch (err) {
+    req.flash(
+      'error',
+      "Une erreur s'est produite à l'insertion de votre photo. Merci de réessayer ultérieurement."
+    );
+    res.redirect('/albums');
+  }
+  res.redirect(`/albums/${id}`);
 };
 
 AlbumController.createAlbumForm = (req, res) => {

@@ -2,14 +2,15 @@ import 'dotenv/config';
 import express from 'express';
 import mongoose from 'mongoose';
 import session from 'express-session';
+import fileUpload from 'express-fileupload';
 import flash from 'connect-flash';
 import path, { join } from 'path';
 import { fileURLToPath } from 'url';
 
-import albumRouter from './routes/album.js';
-
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
+import albumRouter from './routes/album.js';
 
 const app = express();
 const port = 3000;
@@ -32,6 +33,7 @@ app.use('/static', express.static(join(__dirname, 'public')));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(fileUpload());
 
 app.use('/', albumRouter);
 
