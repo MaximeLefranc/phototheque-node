@@ -99,4 +99,19 @@ AlbumController.createAlbum = async (req, res) => {
   }
 };
 
+AlbumController.deleteImage = async (req, res) => {
+  const { id, index } = req.params;
+  const album = await Album.findById(id);
+  const image = album.images[index];
+  if (!image) {
+    res.redirect(`/albums/${id}`);
+    return;
+  }
+  album.images.splice(index, 1);
+  await album.save();
+  const imagePath = join(__dirname, '../public/uploads/', id, image);
+  fs.unlinkSync(imagePath);
+  res.redirect(`/albums/${id}`);
+};
+
 export default AlbumController;
