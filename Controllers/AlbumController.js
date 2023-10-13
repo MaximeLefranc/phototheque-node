@@ -1,4 +1,5 @@
 import Album from '../Models/Album.js';
+import { rimrafSync } from 'rimraf';
 import path, { join } from 'path';
 import { fileURLToPath } from 'url';
 import fs from 'fs';
@@ -19,7 +20,6 @@ AlbumController.albums = async (req, res) => {
 };
 
 AlbumController.album = async (req, res) => {
-  console.log('je suis dans la mauvaise méthode');
   const { id } = req.params;
   try {
     const album = await Album.findById(id);
@@ -78,7 +78,6 @@ AlbumController.createAlbumForm = (req, res) => {
 };
 
 AlbumController.createAlbum = async (req, res) => {
-  console.log('je suis dans la mauvaise méthode');
   const { albumTitle } = req.body;
   try {
     if (!albumTitle) {
@@ -112,6 +111,14 @@ AlbumController.deleteImage = async (req, res) => {
   const imagePath = join(__dirname, '../public/uploads/', id, image);
   fs.unlinkSync(imagePath);
   res.redirect(`/albums/${id}`);
+};
+
+AlbumController.deleteAlbum = async (req, res) => {
+  const { id } = req.params;
+  await Album.findByIdAndDelete(id);
+  const folderPath = join(__dirname, '../public/uploads/', id);
+  rimrafSync(folderPath);
+  res.redirect('/albums');
 };
 
 export default AlbumController;

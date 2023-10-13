@@ -6,8 +6,11 @@ const albumRouter = Router();
 albumRouter.get('/', AlbumController.albums);
 albumRouter.post('/create', AlbumController.createAlbum);
 albumRouter.get('/create', AlbumController.createAlbumForm);
+
 albumRouter.get('/:id', AlbumController.album);
 albumRouter.post('/:id', AlbumController.addImage);
+
 albumRouter.get('/:id/delete/:index', AlbumController.deleteImage);
+albumRouter.get('/:id/delete', AlbumController.deleteAlbum);
 
 export default albumRouter;
