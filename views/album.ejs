@@ -4,7 +4,19 @@
     <div class="row mt-4">
         <a href="/" class="m-4">&lt; Retour</a>
         <h1 class="mb-4"><%= album.title %></h1>
-
+    </div>
+    <div class="row mb-4">
+        <div class="col">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Ajouter une image</h5>
+                    <form action="/albums/<%= album._id %>" method="POST" class="form-inline" enctype="multipart/form-data">
+                        <input name="image" type="file" class="form-control-file">
+                        <button type="submit" class="btn btn-primary">Ajouter</button>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
