@@ -41,11 +41,13 @@ app.get('/', (req, res) => {
   res.redirect('/albums');
 });
 
+// Not Found 404
 app.use((req, res) => {
   res.status(404);
   res.send('Pange non trouvée | Not found error 404');
 });
 
+// Error 500 catched from the wrapper function catchAsync
 app.use((err, req, res, next) => {
   console.error(err);
   res.status(500);
