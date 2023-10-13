@@ -36,7 +36,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/', albumRouter);
 
 app.get('/', (req, res) => {
-  res.render('album', { title: 'Photothèque' });
+  res.redirect('/albums');
 });
 
 app.use((req, res) => {

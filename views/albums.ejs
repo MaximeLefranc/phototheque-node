@@ -1,3 +1,29 @@
 <%- include('partials/header') %>
 
+<div class="container">
+    <div class="row mt-4">
+        <div class="col">
+            <h1>Mes albums</h1>
+            <a href="/albums/create" class="btn btn-primary">Nouvel album</a>
+        </div>
+        <% if (errors.length) { %>
+            <div class="alert alert-danger mt-4 mb-2" role="alert"><%= errors[0] %></div>
+        <% } %>
+    </div>
+    <div class="row mt-3">
+        <div class="col col-xs-12 col-sm-4">
+            <ul class="list-group">
+                <% if (albums) { %>
+                    <% albums.forEach((album) => { %>
+                        <li class="list-group-item d-flex justify-content-between aling-items-center">
+                            <a href="/albums/<%= album._id %>"><%= album.title %></a>
+                            <a href="#" class="link-light badge bg-danger rounded-pill">Supprimer</a>
+                        </li>  
+                    <% });
+                } %>
+            </ul>
+        </div>
+    </div>
+</div>
+
 <%- include('partials/footer') %>
